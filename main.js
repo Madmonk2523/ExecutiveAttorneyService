@@ -1,23 +1,89 @@
-document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', function () {
     const hamburger = document.querySelector('.hamburger');
     const mobileNav = document.getElementById('mobile-menu');
+    const header = document.getElementById('site-header');
+    const body = document.body;
 
-    hamburger.addEventListener('click', function() {
-        mobileNav.classList.toggle('active');
-        this.setAttribute('aria-expanded', mobileNav.classList.contains('active'));
-    });
+    if (!hamburger || !mobileNav) {
+        return;
+    }
 
-    document.addEventListener('click', function(event) {
-        if (!mobileNav.contains(event.target) && !hamburger.contains(event.target)) {
-            mobileNav.classList.remove('active');
-            hamburger.setAttribute('aria-expanded', 'false');
+    const closeMenu = () => {
+        mobileNav.classList.remove('open');
+        hamburger.setAttribute('aria-expanded', 'false');
+        body.classList.remove('no-scroll');
+    };
+
+    const openMenu = () => {
+        mobileNav.classList.add('open');
+        hamburger.setAttribute('aria-expanded', 'true');
+        body.classList.add('no-scroll');
+    };
+
+    hamburger.addEventListener('click', () => {
+        const isOpen = mobileNav.classList.contains('open');
+        if (isOpen) {
+            closeMenu();
+        } else {
+            openMenu();
         }
     });
 
-    document.addEventListener('keydown', function(event) {
+    mobileNav.addEventListener('click', (event) => {
+        const target = event.target;
+        if (target instanceof HTMLElement && target.tagName === 'A') {
+            closeMenu();
+        }
+    });
+
+    document.addEventListener('click', (event) => {
+        const target = event.target;
+        if (
+            mobileNav.classList.contains('open') &&
+            target instanceof HTMLElement &&
+            !mobileNav.contains(target) &&
+            !hamburger.contains(target)
+        ) {
+            closeMenu();
+        }
+    });
+
+    document.addEventListener('keydown', (event) => {
         if (event.key === 'Escape') {
-            mobileNav.classList.remove('active');
-            hamburger.setAttribute('aria-expanded', 'false');
+            closeMenu();
         }
     });
+
+    const handleScroll = () => {
+        if (!header) {
+            return;
+        }
+        if (window.scrollY > 8) {
+            header.classList.add('scrolled');
+        } else {
+            header.classList.remove('scrolled');
+        }
+    };
+
+    handleScroll();
+    window.addEventListener('scroll', handleScroll, { passive: true });
+
+    const revealItems = document.querySelectorAll('.reveal');
+    if ('IntersectionObserver' in window) {
+        const observer = new IntersectionObserver(
+            (entries) => {
+                entries.forEach((entry) => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('visible');
+                        observer.unobserve(entry.target);
+                    }
+                });
+            },
+            { threshold: 0.18 }
+        );
+
+        revealItems.forEach((item) => observer.observe(item));
+    } else {
+        revealItems.forEach((item) => item.classList.add('visible'));
+    }
 });
