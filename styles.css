@@ -27,6 +27,7 @@
 
 html {
     scroll-behavior: smooth;
+    width: 100%;
 }
 
 body {
@@ -35,12 +36,22 @@ body {
     line-height: 1.6;
     background: var(--bg);
     color: var(--text);
+    width: 100%;
     overflow-x: hidden;
 }
 
 img {
     max-width: 100%;
+    height: auto;
     display: block;
+}
+
+main,
+header,
+section,
+footer {
+    width: 100%;
+    overflow-x: clip;
 }
 
 a {
@@ -247,6 +258,7 @@ button:focus-visible {
     display: grid;
     gap: 2.5rem;
     align-items: center;
+    min-width: 0;
 }
 
 .hero-content h1 {
@@ -396,6 +408,7 @@ button:focus-visible {
     display: grid;
     gap: 2rem;
     align-items: center;
+    min-width: 0;
 }
 
 .why-media img {
@@ -463,6 +476,7 @@ button:focus-visible {
 .location-grid {
     display: grid;
     gap: 1.5rem;
+    min-width: 0;
 }
 
 .hours-card,
